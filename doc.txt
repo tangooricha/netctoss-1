@@ -1,0 +1,29 @@
+一.名词解释
+  NETCTOSS
+  Net	网络
+  C	China
+  T	Telecom
+  O	Operation
+  S	Support
+  S	System
+  中国电信运营支持系统-网络版
+  
+二.导jar包
+  1.javaee
+  	依赖tomcat自带的包
+  2.JSTL
+  	使用maven搜jstl,选择1.2
+  3.jdbc
+  	使用maven搜ojdbc,选择10.2.0.4.0
+  4.dbcp
+  	使用maven搜commons-dbcp,选择1.4
+  
+
+
+
+
+
+
+
+
+
