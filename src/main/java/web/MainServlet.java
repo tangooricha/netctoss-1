@@ -27,6 +27,8 @@ public class MainServlet extends HttpServlet {
 			addCost(req, res);
 		} else if ("/updateCost.do".equals(path)) {
 			updateCost(req, res);
+		} else if ("/detailCost.do".equals(path)) {
+			detailCost(req, res);
 		} else {
 			throw new RuntimeException("没有这个页面");
 		}
@@ -86,12 +88,19 @@ public class MainServlet extends HttpServlet {
 		if (deleteId != -1) {
 			dao.delete(deleteId);
 		} else if (openId != -1) {
-			
+			dao.modifyStatus(openId, 0);
 		} else if (modifyId != -1) {
 
 		}
 		// 重定向到查询页面
 		res.sendRedirect("findCost.do");
+	}
+
+	protected void detailCost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.setCharacterEncoding("utf-8");
+		res.setContentType("text/html;charset=utf-8");
+
+		req.getRequestDispatcher("WEB-INF/cost/detail.jsp").forward(req, res);
 	}
 
 }

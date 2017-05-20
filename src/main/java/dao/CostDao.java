@@ -98,6 +98,26 @@ public class CostDao implements Serializable {
 		}
 	}
 	
+	public void modifyStatus(Integer id,Integer val){
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "UPDATE COST SET STATUS = ?, STARTIME = SYSDATE WHERE COST_ID = ?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, val);
+			ps.setInt(2, id);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("开通资费失败", e);
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+	
+	
+	
+	
 	
 
 	public static void main(String[] args) {

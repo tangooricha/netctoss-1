@@ -19,9 +19,16 @@
             }
 
             //启用
-            function startFee() {
+            function startFee(btn) {
                 var r = window.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
-                document.getElementById("operate_result_info").style.display = "block";
+                if(r){
+                	document.getElementById("operate_result_info").style.display = "block";
+                	var id = $(btn).parent().siblings().eq(0).html();
+                	$("#deleteBtn").val(-1);
+                	$("#openBtn").val(id);
+                	$("#modifyBtn").val(-1);
+                	$("form").submit();
+                }
             }
             //删除
             function deleteFee(btn) {
@@ -49,7 +56,7 @@
                 <li><a href="../index.html" class="index_off"></a></li>
                 <li><a href="../role/role_list.html" class="role_off"></a></li>
                 <li><a href="../admin/admin_list.html" class="admin_off"></a></li>
-                <li><a href="../fee/fee_list.html" class="fee_off"></a></li>
+                <li><a href="findCost.do" class="fee_off"></a></li>
                 <li><a href="../account/account_list.html" class="account_off"></a></li>
                 <li><a href="../service/service_list.html" class="service_off"></a></li>
                 <li><a href="../bill/bill_list.html" class="bill_off"></a></li>
@@ -74,7 +81,7 @@
                 <!--启用操作的操作提示-->
                 <div id="operate_result_info" class="operate_success">
                     <img src="images/close.png" onclick="this.parentNode.style.display='none';" />
-                    删除成功！
+                   操作成功！
                 </div>    
                 <!--数据区域：用表格展示数据-->     
                 <div id="data">            
@@ -94,23 +101,22 @@
                         <c:forEach items="${costs}" var="c">                    
                         <tr>
                             <td>${c.costId}</td>
-                            <td><a href="fee_detail.html">${c.name}</a></td>
+                            <td><a href="detailCost.do?costId=${c.costId}">${c.name}</a></td>
                             <td>${c.baseDuration} 小时</td>
                             <td>${c.baseCost} 元</td>
                             <td>${c.unitCost} 元/分钟</td>
                             <td><fmt:formatDate value="${c.creatime}" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
-                            <td>${c.startime}</td>
+                            <td><fmt:formatDate value="${c.startime}" pattern="yyyy年MM月dd日 HH:mm:ss"/></td>
                             <td>
 								<c:if test="${c.status==1}">暂停</c:if>
 								<c:if test="${c.status==0}">开通</c:if>
 							</td>
                             <td>                                
+							<c:if test="${c.status!=0}">
                                 <input type="button" value="启用" class="btn_start" onclick="startFee(this);" />
-                                <input type="hidden" name="openId" id="openBtn"/>
-                                <input type="button" value="修改" class="btn_modify" onclick="location.href='fee_modi.html';" />
-                                <input type="hidden" name="modifyId" id="modifyBtn"/>
+                                <input type="button" value="修改" class="btn_modify" onclick="location.href='modifyCost.do?costId=${c.costId}';" />
                                 <input type="button" value="删除" class="btn_delete" onclick="deleteFee(this);" />
-                                <input type="hidden" name="deleteId" id="deleteBtn"/>
+                            </c:if>
                             </td>
                         </tr>
                        </c:forEach>
@@ -132,6 +138,10 @@
                     <a href="#">5</a>
                     <a href="#">下一页</a>
                 </div>
+                <!-- 隐藏域,用于传参 -->
+                <input type="hidden" name="openId" id="openBtn"/>
+                <input type="hidden" name="modifyId" id="modifyBtn"/>
+                <input type="hidden" name="deleteId" id="deleteBtn"/>
             </form>
         </div>
         <!--主要区域结束-->
