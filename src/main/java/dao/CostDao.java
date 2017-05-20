@@ -2,6 +2,7 @@ package dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,6 +15,11 @@ import util.DBUtil;
 public class CostDao implements Serializable {
 	private static final long serialVersionUID = 3067082910327068077L;
 
+	/**
+	 * 查询所有套餐信息
+	 * 
+	 * @return 从数据库中读取到的所有资费项目
+	 */
 	public List<Cost> findAll() {
 		List<Cost> list = new ArrayList<Cost>();
 		Connection conn = null;
@@ -44,12 +50,62 @@ public class CostDao implements Serializable {
 			DBUtil.close(conn);
 		}
 	}
+
+	/**
+	 * 保存一条资费项目,该项目从网页中填写
+	 * 
+	 * @param cost
+	 */
+	public void save(Cost cost) {
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "INSERT INTO COST VALUES(COST_SEQ.NEXTVAL,?,?,?,?,1,?,SYSDATE,NULL,?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, cost.getName());
+			ps.setInt(2, cost.getBaseDuration());
+			ps.setDouble(3, cost.getBaseCost());
+			ps.setDouble(4, cost.getUnitCost());
+			ps.setString(5, cost.getDescr());
+			ps.setString(6, cost.getCostType());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("保存资费项目失败", e);
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
 	
+	/**
+	 * 根据costId从数据库删除一条记录
+	 * 
+	 * @param id
+	 */
+	public void delete(Integer id) {
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "DELETE FROM COST WHERE COST_ID = ?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("删除资费失败", e);
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+	
+	
+
 	public static void main(String[] args) {
 		CostDao dao = new CostDao();
 		List<Cost> cost = dao.findAll();
-		for(Cost c:cost){
-			System.out.println(c.getCostId()+","+c.getName());
+		for (Cost c : cost) {
+			System.out.println(c.getCostId() + "," + c.getName());
 		}
 	}
+	
 }

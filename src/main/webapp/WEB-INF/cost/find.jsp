@@ -8,6 +8,7 @@
         <title>达内－NetCTOSS</title>
         <link type="text/css" rel="stylesheet" media="all" href="styles/global.css" />
         <link type="text/css" rel="stylesheet" media="all" href="styles/global_color.css" />
+        <script src="js/jquery-1.11.1.js"></script>
         <script language="javascript" type="text/javascript">
             //排序按钮的点击事件
             function sort(btnObj) {
@@ -23,8 +24,15 @@
                 document.getElementById("operate_result_info").style.display = "block";
             }
             //删除
-            function deleteFee() {
+            function deleteFee(btn) {
                 var r = window.confirm("确定要删除此资费吗？");
+                if(r){
+                	var id = $(btn).parent().siblings().eq(0).html();
+                	$("#deleteBtn").val(id);
+                	$("#openBtn").val(-1);
+                	$("#modifyBtn").val(-1);
+                	$("form").submit();
+                }
             }
         </script>        
     </head>
@@ -53,7 +61,7 @@
         <!--导航区域结束-->
         <!--主要区域开始-->
         <div id="main">
-            <form action="" method="">
+            <form action="updateCost.do" method="post">
                 <!--排序-->
                 <div class="search_add">
                     <div>
@@ -61,7 +69,7 @@
                         <input type="button" value="基费" class="sort_asc" onclick="sort(this);" />
                         <input type="button" value="时长" class="sort_asc" onclick="sort(this);" />-->
                     </div>
-                    <input type="button" value="增加" class="btn_add" onclick="location.href='fee_add.html';" />
+                    <input type="button" value="增加" class="btn_add" onclick="location.href='toAddCost.do';" />
                 </div> 
                 <!--启用操作的操作提示-->
                 <div id="operate_result_info" class="operate_success">
@@ -97,9 +105,12 @@
 								<c:if test="${c.status==0}">开通</c:if>
 							</td>
                             <td>                                
-                                <input type="button" value="启用" class="btn_start" onclick="startFee();" />
+                                <input type="button" value="启用" class="btn_start" onclick="startFee(this);" />
+                                <input type="hidden" name="openId" id="openBtn"/>
                                 <input type="button" value="修改" class="btn_modify" onclick="location.href='fee_modi.html';" />
-                                <input type="button" value="删除" class="btn_delete" onclick="deleteFee();" />
+                                <input type="hidden" name="modifyId" id="modifyBtn"/>
+                                <input type="button" value="删除" class="btn_delete" onclick="deleteFee(this);" />
+                                <input type="hidden" name="deleteId" id="deleteBtn"/>
                             </td>
                         </tr>
                        </c:forEach>
