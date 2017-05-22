@@ -10,41 +10,35 @@
         <link type="text/css" rel="stylesheet" media="all" href="styles/global_color.css" />
         <script src="js/jquery-1.11.1.js"></script>
         <script language="javascript" type="text/javascript">
-       
-				//排序按钮的点击事件
-				function sort(btnObj) {
-					if (btnObj.className == "sort_desc") {
-						btnObj.className = "sort_asc";
-						
-					} else {
-						btnObj.className = "sort_desc";
-					}
+      
+			//排序按钮的点击事件
+			function sort(btnObj) {
+				if (btnObj.className == "sort_desc") {
+					btnObj.className = "sort_asc";
+					
+				} else {
+					btnObj.className = "sort_desc";
 				}
+			}
 
-				//启用
-				function startFee(btn) {
-					var r = window
-							.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
-					if (r) {
-						document
-								.getElementById("operate_result_info").style.display = "block";
-						var id = $(btn).parent().siblings()
-								.eq(0).html();
-						window.location.href = "openCost.do?costId="
-								+ id;
-					}
+			//启用
+			function startFee(btn) {
+				var r = window.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
+				if (r) {
+					document.getElementById("operate_result_info").style.display = "block";
+					var id = $(btn).parent().siblings().eq(0).html();
+					window.location.href = "openCost.do?costId=" + id;
 				}
-				//删除
-				function deleteFee(btn) {
-					var r = window.confirm("确定要删除此资费吗？");
-					if (r) {
-						var id = $(btn).parent().siblings()
-								.eq(0).html();
-						window.location.href = "deleteCost.do?costId="
-								+ id;
-					}
+			}
+			//删除
+			function deleteFee(btn) {
+				var r = window.confirm("确定要删除此资费吗？");
+				if (r) {
+					var id = $(btn).parent().siblings().eq(0).html();
+					window.location.href = "deleteCost.do?costId=" + id;
 				}
-			</script>        
+			}
+		</script>        
     </head>
     <body>
         <!--Logo区域开始-->

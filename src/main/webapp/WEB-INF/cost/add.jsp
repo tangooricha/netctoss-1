@@ -109,21 +109,21 @@
                 </div>
                 <div class="text_info clearfix"><span>基本时长：</span></div>
                 <div class="input_info">
-                    <input type="text" value="" class="width100"  name="baseDuration"/>
+                    <input type="text" class="width100"  name="baseDuration"/>
                     <span class="info">小时</span>
                     <span class="required">*</span>
                     <div class="validate_msg_long">1-600之间的整数</div>
                 </div>
                 <div class="text_info clearfix"><span>基本费用：</span></div>
                 <div class="input_info">
-                    <input type="text" value="" class="width100" name="baseCost"/>
+                    <input type="text" class="width100" name="baseCost"/>
                     <span class="info">元</span>
                     <span class="required">*</span>
                     <div class="validate_msg_long">0-99999.99之间的数值</div>
                 </div>
                 <div class="text_info clearfix"><span>单位费用：</span></div>
                 <div class="input_info">
-                    <input type="text" value="" class="width100" name="unitCost"/>
+                    <input type="text" class="width100" name="unitCost"/>
                     <span class="info">元/小时</span>
                     <span class="required">*</span>
                     <div class="validate_msg_long">0-99999.99之间的数值</div>
@@ -135,7 +135,7 @@
                 </div>                    
                 <div class="button_info clearfix">
                     <input type="submit" value="保存" class="btn_save" />
-                    <input type="button" value="取消" class="btn_save" onclick="window.location.href='findCost.do';"/>
+                    <input type="button" value="取消" class="btn_save" onclick="history.back();"/>
                 </div>
             </form>  
         </div>

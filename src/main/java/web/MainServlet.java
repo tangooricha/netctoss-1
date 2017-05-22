@@ -77,35 +77,46 @@ public class MainServlet extends HttpServlet {
 
 	// 添加
 	protected void addCost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		CostDao dao = new CostDao();
 		// 获取参数
-		// 请求方式为为post,要设置编码
+		// 请求方式为post,要设置编码
 		req.setCharacterEncoding("utf-8");
 		String name = req.getParameter("name").trim();
-		String bd = req.getParameter("baseDuration").trim();
-		String bc = req.getParameter("baseCost").trim();
-		String uc = req.getParameter("unitCost").trim();
-		Integer baseDuration = bd.length() == 0 ? 0 : new Integer(bd);
-		Double baseCost = bc.length() == 0 ? 0 : new Double(bc);
-		Double unitCost = uc.length() == 0 ? 0 : new Double(uc);
+
+		// 如果表中已存在此名字,则不用保存,直接返回,并将addSuccess设置为false
+		if (dao.nameExist(name)) {
+			req.setAttribute("addSuccess", false);
+			req.getRequestDispatcher("WEB-INF/cost/add.jsp").forward(req, res);
+			return;
+		}
+
 		String descr = req.getParameter("descr").trim();
 		String costType = req.getParameter("radFeeType").trim();
+		String baseDuration = req.getParameter("baseDuration").trim();
+		String baseCost = req.getParameter("baseCost").trim();
+		String unitCost = req.getParameter("unitCost").trim();
 		// 设置cost
 		Cost cost = new Cost();
 		cost.setName(name);
-		cost.setBaseDuration(baseDuration);
-		cost.setBaseCost(baseCost);
-		cost.setUnitCost(unitCost);
 		cost.setDescr(descr);
 		cost.setCostType(costType);
+		if (!isNone(baseDuration))
+			cost.setBaseDuration(new Integer(baseDuration));
+		if (!isNone(baseCost))
+			cost.setBaseCost(new Double(baseCost));
+		if (!isNone(unitCost))
+			cost.setUnitCost(new Double(unitCost));
 		// 保存cost
-		CostDao dao = new CostDao();
-		if (dao.save(cost)) {
-			req.setAttribute("addSuccess", true);
-		} else {
-			req.setAttribute("addSuccess", false);
-		}
+		dao.save(cost);
 		// 重定向到查询页面
-		req.getRequestDispatcher("WEB-INF/cost/add.jsp").forward(req, res);
+		res.sendRedirect("findCost.do");
+	}
+
+	// 判断一个字符串是否为空
+	private boolean isNone(String s) {
+		if (s == null || s.length() == 0)
+			return true;
+		return false;
 	}
 
 	// 开通
@@ -157,9 +168,12 @@ public class MainServlet extends HttpServlet {
 			cost.setCostId(new Integer(costId));
 			cost.setName(name);
 			cost.setCostType(costType);
-			cost.setBaseDuration(baseDuration.length() == 0 ? 0 : new Integer(baseDuration));
-			cost.setBaseCost(baseCost.length() == 0 ? 0 : new Double(baseCost));
-			cost.setUnitCost(unitCost.length() == 0 ? 0 : new Double(unitCost));
+			if (!isNone(baseDuration))
+				cost.setBaseDuration(new Integer(baseDuration));
+			if (!isNone(baseCost))
+				cost.setBaseCost(new Double(baseCost));
+			if (!isNone(unitCost))
+				cost.setUnitCost(new Double(unitCost));
 			cost.setDescr(descr);
 			new CostDao().modifyCost(cost);
 			req.setAttribute("cost", cost);

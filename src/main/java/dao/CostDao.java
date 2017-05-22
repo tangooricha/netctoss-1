@@ -93,22 +93,23 @@ public class CostDao implements Serializable {
 	 * 
 	 * @param cost
 	 */
-	public boolean save(Cost cost) {
-		if (nameExist(cost.getName()))
-			return false;
+	public void save(Cost cost) {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "INSERT INTO COST VALUES(COST_SEQ.NEXTVAL,?,?,?,?,1,?,SYSDATE,NULL,?)";
+			//String sql = "INSERT INTO COST VALUES(COST_SEQ.NEXTVAL,?,?,?,?,1,?,SYSDATE,NULL,?)";
+			String sql = "INSERT INTO COST VALUES(COST_SEQ.NEXTVAL,?,?,?,?,'1',?,SYSDATE,NULL,?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, cost.getName());
-			ps.setInt(2, cost.getBaseDuration());
-			ps.setDouble(3, cost.getBaseCost());
-			ps.setDouble(4, cost.getUnitCost());
+			//setInt,setDouble不允许传入null,
+			//但实际业务中该字段却可能为null,并且数据库也支持为null,
+			//这样的字段可以当做Object处理
+			ps.setObject(2, cost.getBaseDuration());
+			ps.setObject(3, cost.getBaseCost());
+			ps.setObject(4, cost.getUnitCost());
 			ps.setString(5, cost.getDescr());
 			ps.setString(6, cost.getCostType());
 			ps.executeUpdate();
-			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException("保存资费项目失败", e);
@@ -183,9 +184,9 @@ public class CostDao implements Serializable {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, c.getName());
 			ps.setString(2, c.getCostType());
-			ps.setInt(3, c.getBaseDuration());
-			ps.setDouble(4, c.getBaseCost());
-			ps.setDouble(5, c.getUnitCost());
+			ps.setObject(3, c.getBaseDuration());
+			ps.setObject(4, c.getBaseCost());
+			ps.setObject(5, c.getUnitCost());
 			ps.setString(6, c.getDescr());
 			ps.setInt(7, c.getCostId());
 			ps.executeUpdate();
