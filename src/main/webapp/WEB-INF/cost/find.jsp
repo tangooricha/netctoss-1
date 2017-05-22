@@ -10,38 +10,41 @@
         <link type="text/css" rel="stylesheet" media="all" href="styles/global_color.css" />
         <script src="js/jquery-1.11.1.js"></script>
         <script language="javascript" type="text/javascript">
-            //排序按钮的点击事件
-            function sort(btnObj) {
-                if (btnObj.className == "sort_desc")
-                    btnObj.className = "sort_asc";
-                else
-                    btnObj.className = "sort_desc";
-            }
+       
+				//排序按钮的点击事件
+				function sort(btnObj) {
+					if (btnObj.className == "sort_desc") {
+						btnObj.className = "sort_asc";
+						
+					} else {
+						btnObj.className = "sort_desc";
+					}
+				}
 
-            //启用
-            function startFee(btn) {
-                var r = window.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
-                if(r){
-                	document.getElementById("operate_result_info").style.display = "block";
-                	var id = $(btn).parent().siblings().eq(0).html();
-                	$("#deleteBtn").val(-1);
-                	$("#openBtn").val(id);
-                	$("#modifyBtn").val(-1);
-                	$("form").submit();
-                }
-            }
-            //删除
-            function deleteFee(btn) {
-                var r = window.confirm("确定要删除此资费吗？");
-                if(r){
-                	var id = $(btn).parent().siblings().eq(0).html();
-                	$("#deleteBtn").val(id);
-                	$("#openBtn").val(-1);
-                	$("#modifyBtn").val(-1);
-                	$("form").submit();
-                }
-            }
-        </script>        
+				//启用
+				function startFee(btn) {
+					var r = window
+							.confirm("确定要启用此资费吗？资费启用后将不能修改和删除。");
+					if (r) {
+						document
+								.getElementById("operate_result_info").style.display = "block";
+						var id = $(btn).parent().siblings()
+								.eq(0).html();
+						window.location.href = "openCost.do?costId="
+								+ id;
+					}
+				}
+				//删除
+				function deleteFee(btn) {
+					var r = window.confirm("确定要删除此资费吗？");
+					if (r) {
+						var id = $(btn).parent().siblings()
+								.eq(0).html();
+						window.location.href = "deleteCost.do?costId="
+								+ id;
+					}
+				}
+			</script>        
     </head>
     <body>
         <!--Logo区域开始-->
@@ -68,13 +71,13 @@
         <!--导航区域结束-->
         <!--主要区域开始-->
         <div id="main">
-            <form action="updateCost.do" method="post">
+            <form action="" method="">
                 <!--排序-->
                 <div class="search_add">
                     <div>
-                        <!--<input type="button" value="月租" class="sort_asc" onclick="sort(this);" />
+                       <input type="button" value="月租" class="sort_asc" onclick="sort(this);" />
                         <input type="button" value="基费" class="sort_asc" onclick="sort(this);" />
-                        <input type="button" value="时长" class="sort_asc" onclick="sort(this);" />-->
+                        <input type="button" value="时长" class="sort_asc" onclick="sort(this);" />
                     </div>
                     <input type="button" value="增加" class="btn_add" onclick="location.href='toAddCost.do';" />
                 </div> 
@@ -114,34 +117,60 @@
                             <td>                                
 							<c:if test="${c.status!=0}">
                                 <input type="button" value="启用" class="btn_start" onclick="startFee(this);" />
-                                <input type="button" value="修改" class="btn_modify" onclick="location.href='modifyCost.do?costId=${c.costId}';" />
+                                <input type="button" value="修改" class="btn_modify" onclick="location.href='toModifyCost.do?costId=${c.costId}';" />
                                 <input type="button" value="删除" class="btn_delete" onclick="deleteFee(this);" />
                             </c:if>
                             </td>
                         </tr>
                        </c:forEach>
                     </table>
-                    <p>业务说明：<br />
+                    <!-- <p>业务说明：<br />
                     1、创建资费时，状态为暂停，记载创建时间；<br />
                     2、暂停状态下，可修改，可删除；<br />
                     3、开通后，记载开通时间，且开通后不能修改、不能再停用、也不能删除；<br />
                     4、业务账号修改资费时，在下月底统一触发，修改其关联的资费ID（此触发动作由程序处理）
-                    </p>
+                    </p> -->
                 </div>
                 <!--分页-->
                 <div id="pages">
-        	        <a href="#">上一页</a>
-                    <a href="#" class="current_page">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">5</a>
-                    <a href="#">下一页</a>
+        	        <a href="findCost.do?pageNum=1">首页</a>
+        	        <%
+        	        	int curr = (Integer)request.getAttribute("costPage");
+        	        	int totalCost = (Integer)request.getAttribute("totalCost");
+        	        	// 计算最大页码数
+        	    		int max = (int) Math.ceil(totalCost / 10.0);
+        	    		// 页面中显示的开始页和结束页,最多出现5个页码
+        	    		int start=0, end=0;
+        	    		if(curr==1 || curr == 2){
+        	    			start = 1;
+        	    			end = 5;
+        	    		} else if (curr == max || curr == max -1) {
+        	    			start = max - 4;
+        	    			end = max;
+        	    		} else {
+        	    			start = curr - 2;
+        	    			end = curr + 2;
+        	    		}
+        	    	%>
+        	    	<a href="findCost.do?pageNum=<%=curr-1%>">上一页</a>
+        	    	<%
+        	        	for(int i = start; i <=end; i++){
+        	        		if(i>=1&&i<=max){
+        	        			if(i == curr){
+        	        %>
+        	        			<a href="findCost.do?pageNum=<%=i%>" class="current_page"><%=i%></a>
+        	        <%
+        	        			}else{
+        	        %>
+								<a href="findCost.do?pageNum=<%=i%>"><%=i%></a>
+					<%	
+        	        			}
+        	        		}
+        	        	}
+        	        %>
+                    <a href="findCost.do?pageNum=<%=curr+1%>">下一页</a>
+                    <a href="findCost.do?pageNum=<%=max%>">尾页</a>
                 </div>
-                <!-- 隐藏域,用于传参 -->
-                <input type="hidden" name="openId" id="openBtn"/>
-                <input type="hidden" name="modifyId" id="modifyBtn"/>
-                <input type="hidden" name="deleteId" id="deleteBtn"/>
             </form>
         </div>
         <!--主要区域结束-->

@@ -55,7 +55,17 @@
             }
         </script>
     </head>
-    <body>
+    <body onload="
+    <%	
+    	Object o = request.getAttribute("addSuccess");
+    	if(o!=null && !(Boolean)o){
+    %>
+    	showResult();
+    <%
+    	}
+    	request.removeAttribute("addSuccess");
+    %>
+    ">
         <!--Logo区域开始-->
         <div id="header">
             <img src="images/logo.png" alt="logo" class="left"/>
@@ -125,7 +135,7 @@
                 </div>                    
                 <div class="button_info clearfix">
                     <input type="submit" value="保存" class="btn_save" />
-                    <input type="button" value="取消" class="btn_save" />
+                    <input type="button" value="取消" class="btn_save" onclick="window.location.href='findCost.do';"/>
                 </div>
             </form>  
         </div>
