@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.AdminDao;
 import dao.CostDao;
+import entity.Admin;
 import entity.Cost;
 
 public class MainServlet extends HttpServlet {
@@ -35,6 +37,12 @@ public class MainServlet extends HttpServlet {
 			toModifyCost(req, res);
 		} else if ("/saveModifyCost.do".equals(path)) {
 			saveModifyCost(req, res);
+		} else if ("/toLogin.do".equals(path)) {
+			toLogin(req, res);
+		} else if ("/login.do".equals(path)) {
+			login(req, res);
+		} else if ("/toIndex.do".equals(path)) {
+			toIndex(req, res);
 		} else {
 			throw new RuntimeException("没有这个页面");
 		}
@@ -46,6 +54,21 @@ public class MainServlet extends HttpServlet {
 		// 获取当前页面的页码
 		String s = req.getParameter("pageNum");
 		int curr = (s == null || s.length() == 0) ? 1 : new Integer(s);
+		// 获取排序信息
+		String orderName = req.getParameter("orderName");
+		String orderType = req.getParameter("orderType");
+		System.out.println(orderName+","+orderType);
+		if (isNone(orderName) && isNone(orderType)) {
+			orderName = (String) req.getAttribute("orderName");
+			orderType = (String) req.getAttribute("orderType");
+			if (isNone(orderName) && isNone(orderType)) {
+				orderName = "cost_id";
+				orderType = "asc";
+			}
+		} else {
+			req.setAttribute("orderName", orderName);
+			req.setAttribute("orderType", orderType);
+		}
 
 		CostDao dao = new CostDao();
 		// 获取总的资费数量
@@ -59,7 +82,7 @@ public class MainServlet extends HttpServlet {
 			curr = max;
 		}
 		// 查询当前页面的资费
-		List<Cost> list = dao.findPageCost(curr);
+		List<Cost> list = dao.findOrderPageCost(orderName, orderType, curr);
 
 		// 将请求转发到jsp
 		req.setAttribute("costPage", curr);
@@ -187,4 +210,38 @@ public class MainServlet extends HttpServlet {
 
 	}
 
+	// 跳转到登录页面
+	protected void toLogin(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.getRequestDispatcher("/WEB-INF/main/login.jsp").forward(req, res);
+	}
+
+	// 判断登录逻辑:账号,密码,验证码
+	protected void login(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		// 接收参数
+		req.setCharacterEncoding("utf-8");
+		String adminCode = req.getParameter("adminCode");
+		String password = req.getParameter("password");
+
+		// 验证账号密码
+		AdminDao dao = new AdminDao();
+		Admin a = dao.findByCode(adminCode);
+		if (a == null) {
+			// 账号错误
+			req.setAttribute("error", "账号错误");
+			req.getRequestDispatcher("WEB-INF/main/login.jsp").forward(req, res);
+		} else if (!a.getPassword().equals(password)) {
+			// 密码错误
+			req.setAttribute("error", "密码错误");
+			req.getRequestDispatcher("WEB-INF/main/login.jsp").forward(req, res);
+		} else {
+			// 验证通过,重定向到主页
+			res.sendRedirect("toIndex.do");
+		}
+
+	}
+
+	// 跳转到主页
+	protected void toIndex(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		req.getRequestDispatcher("/WEB-INF/main/index.jsp").forward(req, res);
+	}
 }

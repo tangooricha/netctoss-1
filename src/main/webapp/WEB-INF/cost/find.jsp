@@ -10,15 +10,27 @@
         <link type="text/css" rel="stylesheet" media="all" href="styles/global_color.css" />
         <script src="js/jquery-1.11.1.js"></script>
         <script language="javascript" type="text/javascript">
-      
+      		//排序信息
+			var orderName;
+			var orderType;
 			//排序按钮的点击事件
 			function sort(btnObj) {
+					var val = btnObj.value;
 				if (btnObj.className == "sort_desc") {
 					btnObj.className = "sort_asc";
-					
+					orderType = "asc";
 				} else {
 					btnObj.className = "sort_desc";
+					orderType = "desc";
 				}
+				if(val=='月租'){
+					orderName = 'name';
+				} else if(val=='基费'){
+					orderName = 'base_cost';
+				} else if(val=='时长'){
+					orderName = 'base_duration';
+				}
+				location.href = "findCost.do?orderName="+orderName+"&orderType="+orderType;
 			}
 
 			//启用
@@ -38,6 +50,20 @@
 					window.location.href = "deleteCost.do?costId=" + id;
 				}
 			}
+			
+			$(function(){
+				var orderName = '${orderName}';
+				var orderType = '${orderType}';
+				if(orderType == 'asc')
+					return;
+				if(orderName=='name'){
+					$("[value='月租']").removeClass('sort_asc').addClass('sort_desc');
+				} else if(orderName=='base_duration'){
+					$("[value='时长']").removeClass('sort_asc').addClass('sort_desc');
+				} else if(orderName=='base_cost'){
+					$("[value='基费']").removeClass('sort_asc').addClass('sort_desc');
+				}
+			});
 		</script>        
     </head>
     <body>
@@ -50,7 +76,7 @@
         <!--导航区域开始-->
         <div id="navi">                        
             <ul id="menu">
-                <li><a href="../index.html" class="index_off"></a></li>
+                <li><a href="toIndex.do" class="index_off"></a></li>
                 <li><a href="../role/role_list.html" class="role_off"></a></li>
                 <li><a href="../admin/admin_list.html" class="admin_off"></a></li>
                 <li><a href="findCost.do" class="fee_off"></a></li>
@@ -69,9 +95,9 @@
                 <!--排序-->
                 <div class="search_add">
                     <div>
-                       <input type="button" value="月租" class="sort_asc" onclick="sort(this);" />
-                        <input type="button" value="基费" class="sort_asc" onclick="sort(this);" />
+    					<input type="button" value="月租" class="sort_asc" onclick="sort(this);" />
                         <input type="button" value="时长" class="sort_asc" onclick="sort(this);" />
+                        <input type="button" value="基费" class="sort_asc" onclick="sort(this);" />
                     </div>
                     <input type="button" value="增加" class="btn_add" onclick="location.href='toAddCost.do';" />
                 </div> 
@@ -94,7 +120,8 @@
                             <th>开通时间</th>
                             <th class="width50">状态</th>
                             <th class="width200"></th>
-                        </tr>  
+                        </tr>
+                        <tbody id="datebody">
                         <c:forEach items="${costs}" var="c">                    
                         <tr>
                             <td>${c.costId}</td>
@@ -117,6 +144,7 @@
                             </td>
                         </tr>
                        </c:forEach>
+                       </tbody>  
                     </table>
                     <!-- <p>业务说明：<br />
                     1、创建资费时，状态为暂停，记载创建时间；<br />
@@ -146,24 +174,24 @@
         	    			end = curr + 2;
         	    		}
         	    	%>
-        	    	<a href="findCost.do?pageNum=<%=curr-1%>">上一页</a>
+        	    	<a href="findCost.do?pageNum=<%=curr-1%>&orderName=${orderName}&orderType=${orderType}">上一页</a>
         	    	<%
         	        	for(int i = start; i <=end; i++){
         	        		if(i>=1&&i<=max){
         	        			if(i == curr){
         	        %>
-        	        			<a href="findCost.do?pageNum=<%=i%>" class="current_page"><%=i%></a>
+        	        			<a href="findCost.do?pageNum=<%=i%>&orderName=${orderName}&orderType=${orderType}" class="current_page"><%=i%></a>
         	        <%
         	        			}else{
         	        %>
-								<a href="findCost.do?pageNum=<%=i%>"><%=i%></a>
+								<a href="findCost.do?pageNum=<%=i%>&orderName=${orderName}&orderType=${orderType}"><%=i%></a>
 					<%	
         	        			}
         	        		}
         	        	}
         	        %>
-                    <a href="findCost.do?pageNum=<%=curr+1%>">下一页</a>
-                    <a href="findCost.do?pageNum=<%=max%>">尾页</a>
+                    <a href="findCost.do?pageNum=<%=curr+1%>&orderName=${orderName}&orderType=${orderType}">下一页</a>
+                    <a href="findCost.do?pageNum=<%=max%>&orderName=${orderName}&orderType=${orderType}">尾页</a>
                 </div>
             </form>
         </div>

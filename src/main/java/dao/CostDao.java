@@ -248,7 +248,44 @@ public class CostDao implements Serializable {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("获取资费总数失败", e);
+			throw new RuntimeException("获取资费失败", e);
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+	
+	/** 先排序,再获取每页的资费项目,默认为每页10条记录 */
+	public List<Cost> findOrderPageCost(String orderName,String orderType,int page) {
+		Connection conn = null;
+		List<Cost> list = new ArrayList<Cost>();
+		int start = (page - 1) * 10 + 1;
+		int end = page * 10;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "SELECT * FROM (" + "SELECT ROWNUM RN, T.* FROM ("
+					+ "SELECT * FROM COST ORDER BY " + orderName + " " + orderType+") T ) " + "WHERE RN BETWEEN ? AND ?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, start);
+			ps.setInt(2, end);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Cost c = new Cost();
+				c.setCostId(rs.getInt("cost_id"));
+				c.setName(rs.getString("name"));
+				c.setBaseDuration(rs.getInt("base_duration"));
+				c.setBaseCost(rs.getDouble("base_cost"));
+				c.setUnitCost(rs.getDouble("unit_cost"));
+				c.setStatus(rs.getString("status"));
+				c.setDescr(rs.getString("descr"));
+				c.setCreatime(rs.getTimestamp("creatime"));
+				c.setStartime(rs.getTimestamp("startime"));
+				c.setCostType(rs.getString("cost_type"));
+				list.add(c);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("获取资费失败", e);
 		} finally {
 			DBUtil.close(conn);
 		}

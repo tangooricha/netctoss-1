@@ -2,5 +2,7 @@ eclipse.preferences.version=1
 encoding//src/main/java/util/DBUtil.java=UTF-8
 encoding//src/main/webapp/WEB-INF/cost/add.jsp=UTF-8
 encoding//src/main/webapp/WEB-INF/cost/modify.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/main/index.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/main/login.jsp=UTF-8
 encoding//src/main/webapp/styles/global.css=UTF-8
 encoding//src/main/webapp/styles/global_color.css=UTF-8
