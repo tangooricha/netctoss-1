@@ -12,7 +12,8 @@ import util.DBUtil;
 
 public class AdminDao implements Serializable {
 	private static final long serialVersionUID = 221587074591276396L;
-
+	
+	//≤È’“admin
 	public Admin findByCode(String adminCode) {
 		Connection conn = null;
 		try {
@@ -40,9 +41,28 @@ public class AdminDao implements Serializable {
 		}
 		return null;
 	}
+	
+	//–ﬁ∏ƒadmin√‹¬Î
+	public void modifyPwdByCode(String adminCode, String password){
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			String sql = "UPDATE ADMIN_INFO SET PASSWORD=? WHERE ADMIN_CODE=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, password);
+			ps.setString(2, adminCode);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("–ﬁ∏ƒ√‹¬Î ß∞‹",e);
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
 
 	public static void main(String[] args) {
 		AdminDao dao = new AdminDao();
 		System.out.println(dao.findByCode("caocao"));
 	}
+	
 }

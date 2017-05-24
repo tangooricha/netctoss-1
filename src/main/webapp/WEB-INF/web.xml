@@ -20,4 +20,32 @@
 		<servlet-name>main</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+
+	<!-- 配置错误页面 :当Tomcat捕获到这种错误时,会自动转发到对应页面 1.error-code,利用错误编号匹配 (常用) 2.exception-type,利用异常类型来匹配 -->
+	<error-page>
+		<error-code>404</error-code>
+		<!-- location中要写绝对路径,但error是通过转发实现的,此过程中Tomcat会在路径前面自动加上/netctoss,所以此处不能再加/netctoss 
+			需要注意:转发时若要写绝对路径,不能在前面加上/netctoss,因为转发时Tomcat会自动在路径前加上/项目名 -->
+		<location>/WEB-INF/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<!-- location中要写绝对路径,但error是通过转发实现的,此过程中Tomcat会在路径前面自动加上/netctoss,所以此处不能再加/netctoss 
+			需要注意:转发时若要写绝对路径,不能在前面加上/netctoss,因为转发时Tomcat会自动在路径前加上/项目名 -->
+		<location>/WEB-INF/error.jsp</location>
+	</error-page>
+	<!-- 声明session的超时时间(分钟),默认30分钟 -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	
+	<!-- 配置检查登录过滤器 -->
+	<filter>
+		<filter-name>login</filter-name>
+		<filter-class>web.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>login</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
 </web-app>

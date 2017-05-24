@@ -12,24 +12,12 @@
     <body>
         <!--Logo区域开始-->
         <div id="header">
-            <img src="images/logo.png" alt="logo" class="left"/>
-            <a href="#">[退出]</a>            
+            <%@include file="../logo.jsp" %>              
         </div>
         <!--Logo区域结束-->
         <!--导航区域开始-->
         <div id="navi">
-            <ul id="menu">
-                <li><a href="toIndex.do" class="index_off"></a></li>
-                <li><a href="../role/role_list.html" class="role_off"></a></li>
-                <li><a href="../admin/admin_list.html" class="admin_off"></a></li>
-                <li><a href="findCost.do" class="fee_off"></a></li>
-                <li><a href="../account/account_list.html" class="account_off"></a></li>
-                <li><a href="../service/service_list.html" class="service_off"></a></li>
-                <li><a href="../bill/bill_list.html" class="bill_off"></a></li>
-                <li><a href="../report/report_list.html" class="report_off"></a></li>
-                <li><a href="../user/user_info.html" class="information_off"></a></li>
-                <li><a href="../user/user_modi_pwd.html" class="password_off"></a></li>
-            </ul>
+            <%@include file="../menu.jsp" %>
         </div>
         <!--导航区域结束-->
         <!--主要区域开始-->
