@@ -9,9 +9,11 @@
         <link type="text/css" rel="stylesheet" media="all" href="styles/global_color.css" />
         <script language="javascript" type="text/javascript">
             //保存结果的提示
-            function showResult() {
-                showResultDiv(true);
-                window.setTimeout("showResultDiv(false);", 3000);
+            function showResult(addSuccess) {
+            	if(!addSuccess){
+					showResultDiv(true);
+					window.setTimeout("showResultDiv(false);", 3000);
+            	}
             }
             function showResultDiv(flag) {
                 var divResult = document.getElementById("save_result_info");
@@ -55,17 +57,7 @@
             }
         </script>
     </head>
-    <body onload="
-    <%	
-    	Object o = request.getAttribute("addSuccess");
-    	if(o!=null && !(Boolean)o){
-    %>
-    	showResult();
-    <%
-    	}
-    	request.removeAttribute("addSuccess");
-    %>
-    ">
+    <body onload="showResult(${addSuccess});">
         <!--Logo区域开始-->
         <div id="header">
             <%@include file="../logo.jsp" %>              
